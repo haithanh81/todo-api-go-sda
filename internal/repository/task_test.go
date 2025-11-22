@@ -38,8 +38,10 @@ func TestTaskRepository_FindAll(t *testing.T) {
 	repo := NewTaskRepository(db)
 
 	// Create some tasks
-	repo.Create(&models.Task{Content: "Task 1"})
-	repo.Create(&models.Task{Content: "Task 2"})
+	err := repo.Create(&models.Task{Content: "Task 1"})
+	assert.NoError(t, err)
+	err = repo.Create(&models.Task{Content: "Task 2"})
+	assert.NoError(t, err)
 
 	tasks, err := repo.FindAll()
 
@@ -52,7 +54,8 @@ func TestTaskRepository_FindByID_Success(t *testing.T) {
 	repo := NewTaskRepository(db)
 
 	created := &models.Task{Content: "Test task"}
-	repo.Create(created)
+	err := repo.Create(created)
+	assert.NoError(t, err)
 
 	task, err := repo.FindByID(created.ID)
 
@@ -77,10 +80,11 @@ func TestTaskRepository_Update(t *testing.T) {
 	repo := NewTaskRepository(db)
 
 	task := &models.Task{Content: "Old content"}
-	repo.Create(task)
+	err := repo.Create(task)
+	assert.NoError(t, err)
 
 	task.Content = "New content"
-	err := repo.Update(task)
+	err = repo.Update(task)
 
 	assert.NoError(t, err)
 
@@ -93,9 +97,10 @@ func TestTaskRepository_Delete_Success(t *testing.T) {
 	repo := NewTaskRepository(db)
 
 	task := &models.Task{Content: "Task to delete"}
-	repo.Create(task)
+	err := repo.Create(task)
+	assert.NoError(t, err)
 
-	err := repo.Delete(task.ID)
+	err = repo.Delete(task.ID)
 
 	assert.NoError(t, err)
 
