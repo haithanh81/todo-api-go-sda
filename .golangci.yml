@@ -1,6 +1,7 @@
 run:
-  skip-dirs:
-    - tests/integration
+  skip-files:
+    - "tests/integration/.*\\.go$"
+  skip-dirs-use-default: true
   timeout: 5m
 
 linters:
