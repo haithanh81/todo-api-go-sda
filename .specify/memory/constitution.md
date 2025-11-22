@@ -2,7 +2,17 @@
 <!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
 ## Core Principles
+All backend services MUST be implemented in Golang (Go 1.21+).
+The Gin web framework (github.com/gin-gonic/gin) MUST be used for all API routing.
+The GORM library (gorm.io/gorm) MUST be used for all database interactions, with the PostgreSQL driver.
+All API endpoints MUST be defined in a root 'openapi.yaml' file, following OpenAPI 3.0 standards.    
+Unit test coverage MUST remain above 80% and follow standard Go testing practices.    
+Code MUST be formatted with gofmt.
 
+## Constraints
+Database MUST be PostgreSQL.
+Deployment target will be via containers (Docker).
+2Response times must remain below 200ms at P95.
 ### [PRINCIPLE_1_NAME]
 <!-- Example: I. Library-First -->
 [PRINCIPLE_1_DESCRIPTION]

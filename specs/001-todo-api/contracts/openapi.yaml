@@ -1,0 +1,362 @@
+openapi: 3.0.3
+info:
+  title: Todo API
+  description: |
+    A simple Todo API with endpoints for creating, listing, updating, and deleting tasks.
+    Each task has an id, content (string), and completed (boolean) status.
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Tasks
+    description: Task management operations
+
+paths:
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: List all tasks
+      description: Retrieve all tasks in the system
+      operationId: listTasks
+      responses:
+        '200':
+          description: List of all tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+              examples:
+                withTasks:
+                  summary: List with tasks
+                  value:
+                    tasks:
+                      - id: 1
+                        content: "Buy groceries"
+                        completed: false
+                        created_at: "2025-11-22T10:00:00Z"
+                        updated_at: "2025-11-22T10:00:00Z"
+                      - id: 2
+                        content: "Complete project"
+                        completed: true
+                        created_at: "2025-11-22T09:00:00Z"
+                        updated_at: "2025-11-22T11:00:00Z"
+                    count: 2
+                empty:
+                  summary: Empty list
+                  value:
+                    tasks: []
+                    count: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Tasks
+      summary: Create a new task
+      description: Create a new task with the provided content. The completed status defaults to false.
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+            examples:
+              basic:
+                summary: Create a task
+                value:
+                  content: "Buy groceries"
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+              example:
+                id: 1
+                content: "Buy groceries"
+                completed: false
+                created_at: "2025-11-22T10:00:00Z"
+                updated_at: "2025-11-22T10:00:00Z"
+        '400':
+          description: Invalid request (missing or empty content)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingContent:
+                  summary: Missing content field
+                  value:
+                    error:
+                      code: "VALIDATION_ERROR"
+                      message: "content is required"
+                emptyContent:
+                  summary: Empty content
+                  value:
+                    error:
+                      code: "VALIDATION_ERROR"
+                      message: "content cannot be empty"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Task ID
+        schema:
+          type: integer
+          minimum: 1
+        example: 1
+
+    get:
+      tags:
+        - Tasks
+      summary: Get a task by ID
+      description: Retrieve a specific task by its unique identifier
+      operationId: getTask
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+              example:
+                id: 1
+                content: "Buy groceries"
+                completed: false
+                created_at: "2025-11-22T10:00:00Z"
+                updated_at: "2025-11-22T10:00:00Z"
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: "TASK_NOT_FOUND"
+                  message: "Task with id 1 not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Tasks
+      summary: Update a task
+      description: Update the content and/or completed status of an existing task
+      operationId: updateTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+            examples:
+              updateContent:
+                summary: Update content only
+                value:
+                  content: "Buy organic groceries"
+              markComplete:
+                summary: Mark as completed
+                value:
+                  completed: true
+              updateBoth:
+                summary: Update both fields
+                value:
+                  content: "Buy organic groceries"
+                  completed: true
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+              example:
+                id: 1
+                content: "Buy organic groceries"
+                completed: true
+                created_at: "2025-11-22T10:00:00Z"
+                updated_at: "2025-11-22T12:00:00Z"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: "TASK_NOT_FOUND"
+                  message: "Task with id 999 not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Tasks
+      summary: Delete a task
+      description: Remove a task from the system
+      operationId: deleteTask
+      responses:
+        '204':
+          description: Task deleted successfully (no content)
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: "TASK_NOT_FOUND"
+                  message: "Task with id 999 not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Task:
+      type: object
+      description: A todo task
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the task (system-generated)
+          example: 1
+          readOnly: true
+        content:
+          type: string
+          description: Text description of what needs to be done
+          minLength: 1
+          maxLength: 1000
+          example: "Buy groceries"
+        completed:
+          type: boolean
+          description: Whether the task has been finished
+          default: false
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: When the task was created
+          readOnly: true
+          example: "2025-11-22T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: When the task was last modified
+          readOnly: true
+          example: "2025-11-22T10:00:00Z"
+      required:
+        - id
+        - content
+        - completed
+        - created_at
+        - updated_at
+
+    TaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/Task'
+
+    TaskListResponse:
+      type: object
+      description: Response containing a list of tasks
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+          description: List of tasks
+        count:
+          type: integer
+          description: Total number of tasks
+          example: 2
+      required:
+        - tasks
+        - count
+
+    CreateTaskRequest:
+      type: object
+      description: Request body for creating a new task
+      properties:
+        content:
+          type: string
+          description: Text description of what needs to be done
+          minLength: 1
+          maxLength: 1000
+          example: "Buy groceries"
+      required:
+        - content
+
+    UpdateTaskRequest:
+      type: object
+      description: Request body for updating an existing task
+      properties:
+        content:
+          type: string
+          description: Updated text description
+          minLength: 1
+          maxLength: 1000
+          example: "Buy organic groceries"
+        completed:
+          type: boolean
+          description: Updated completion status
+          example: true
+
+    ErrorResponse:
+      type: object
+      description: Error response
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: "TASK_NOT_FOUND"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Task with id 999 not found"
+          required:
+            - code
+            - message
+      required:
+        - error
