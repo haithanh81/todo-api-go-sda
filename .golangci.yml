@@ -1,0 +1,18 @@
+run:
+  skip-dirs:
+    - tests/integration
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+
+linters-settings:
+  errcheck:
+    check-blank: false
+    check-type-assertions: false
