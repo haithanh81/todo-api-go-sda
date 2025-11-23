@@ -17,6 +17,14 @@ tags:
     description: Task management operations
 
 paths:
+  /tasks/search:
+    get:
+      summary: Search for tasks
+      operationId: searchTasks
+      responses:
+        '200':
+          description: A list of tasks
+          
   /tasks:
     get:
       tags:

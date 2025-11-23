@@ -49,11 +49,6 @@ func main() {
 		}
 	}
 
-	//... mã thiết lập router gin...
-
-	// LỖI CỐ TÌNH: Biến 'unusedVar' không được sử dụng
-	unusedVar := "this will fail linting"
-
 	router.GET("/tasks/search", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "search not implemented"})
 	})
