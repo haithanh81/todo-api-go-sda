@@ -49,6 +49,17 @@ func main() {
 		}
 	}
 
+	//... mã thiết lập router gin...
+
+	// LỖI CỐ TÌNH: Biến 'unusedVar' không được sử dụng
+	unusedVar := "this will fail linting"
+
+	router.GET("/tasks/search", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "search not implemented"})
+	})
+
+	//... router.Run()...
+
 	// Start server
 	log.Printf("Starting server on port %s", cfg.Server.Port)
 	if err := router.Run(":" + cfg.Server.Port); err != nil {
