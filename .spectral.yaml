@@ -1,7 +1,7 @@
 extends: "spectral:oas"
 rules:
   # Tắt các quy tắc này 
-  openapi-tags: "off"
-  operation-tags: "off"
+  # openapi-tags: "off"
+  # operation-tags: "off"
   # Thay đổi mức độ nghiêm trọng từ 'error' thành 'warn' [42]
   info-license: "warn"
